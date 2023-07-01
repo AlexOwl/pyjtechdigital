@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "pyjtechdigital"
+version = "0.1.1"
+description = "Python library for remote control of J-Tech Digital HDMI Matrix."
+authors = ["Alex Owl <alexowl@protonmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Drafteed/pyjtechdigital"
+packages = [
+  { include = "pyjtechdigital" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aiohttp = "*"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.2.0"
+pre-commit = "^2.20.0"
+mypy = "^0.991"
+black = "^22.10.0"
+isort = "^5.10.1"
+flake8 = "^5.0.4"
+
+[tool.isort]
+profile = "black"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
