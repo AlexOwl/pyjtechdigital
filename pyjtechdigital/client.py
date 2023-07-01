@@ -143,7 +143,7 @@ class JtechClient:
                 self._session.cookie_jar.update_cookies(normalized_cookies)
 
             if response.status == 200:
-                result = await response.json() if json else True
+                result = await response.json(content_type=None) if json else True
                 _LOGGER.debug("Response result: %s", result)
         except ClientError as err:
             _LOGGER.debug("Request error %s", err)
