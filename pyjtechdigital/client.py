@@ -45,10 +45,7 @@ class JtechClient:
 
         if user is not None:
             assert password is not None
-
-            resp = await self.login(user, password)
-            if not resp:
-                raise JtechAuthError
+            await self.login(user, password)
         else:
             if self._session is not None:
                 self._token = None
@@ -121,7 +118,8 @@ class JtechClient:
 
         headers["Cache-Control"] = "no-cache"
         headers["Connection"] = "keep-alive"
-        headers["Authorization"] = f"Bearer {self._token}"
+        if self._token:
+            headers["Authorization"] = f"Bearer {self._token}"
 
         _LOGGER.debug("Request %s, data: %s, headers: %s", url, data, headers)
 
