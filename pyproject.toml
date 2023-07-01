@@ -5,7 +5,7 @@ description = "Python library for remote control of J-Tech Digital HDMI Matrix."
 authors = ["Alex Owl <alexowl@protonmail.com>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/Drafteed/pyjtechdigital"
+repository = "https://github.com/AlexOwl/pyjtechdigital"
 packages = [
   { include = "pyjtechdigital" }
 ]
