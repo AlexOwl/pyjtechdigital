@@ -283,6 +283,7 @@ class JtechClient:
         return JtechVideoStatusResponse(
             True,
             result,
+            bool(result.get(ATTR_POWER)),
             result.get(ATTR_SELECTED_SOURCES),
             result.get(ATTR_SOURCE_NAMES),
             result.get(ATTR_OUTPUT_NAMES),
