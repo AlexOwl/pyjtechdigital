@@ -275,11 +275,11 @@ class JtechClient:
     async def get_video_status(self,) -> dict[str, Any]:
         result = await self.send_rest_req("get video status")
         #"power": 1,
-	    #"allsource": [1, 1, 1, 1],
-	    #"allinputname": ["Apple TV", "PlayStation", "Nintendo", "Input4"],
-	    #"alloutputname": ["L Projector", "L TV", "U TV", "Output4"],
-	    #"allhdbtoutputname": ["catoutput1", "catoutput2", "catoutput3", "catoutput4"],
-	    #"allname": ["preset1", "preset2", "preset3", "preset4"]
+        #"allsource": [1, 1, 1, 1],
+        #"allinputname": ["Apple TV", "PlayStation", "Nintendo", "Input4"],
+        #"alloutputname": ["L Projector", "L TV", "U TV", "Output4"],
+        #"allhdbtoutputname": ["catoutput1", "catoutput2", "catoutput3", "catoutput4"],
+        #"allname": ["preset1", "preset2", "preset3", "preset4"]
         return JtechVideoStatusResponse(
             True,
             result,
@@ -341,10 +341,10 @@ class JtechClient:
     async def get_source_status(self,) -> dict[str, Any]:
         result = await self.send_rest_req("get input status")
         #"comhead": "get input status",
-	    #"power": 1,
-	    #"edid": [16, 19, 19, 19],
-	    #"inactive": [1, 0, 0, 0],
-	    #"inname": ["Apple TV", "PlayStation", "Nintendo", "Input4"]
+        #"power": 1,
+        #"edid": [16, 19, 19, 19],
+        #"inactive": [1, 0, 0, 0],
+        #"inname": ["Apple TV", "PlayStation", "Nintendo", "Input4"]
         return JtechInputStatusResponse(
             True,
             result,
@@ -414,15 +414,15 @@ class JtechClient:
     async def get_output_status(self,) -> dict[str, Any]:
         result = await self.send_rest_req("get output status")
         #"comhead": "get output status",
-	    #"power": 1,
-	    #"allsource": [1, 1, 1, 1],
-	    #"allscaler": [0, 0, 0, 0],
-	    #"allout": [0, 0, 0, 0],
-	    #"allhdbtout": [1, 1, 1, 1],
-	    #"allconnect": [1, 1, 1, 1],
-	    #"allhdbtconnect": [0, 1, 1, 0],
-	    #"name": ["L Projector", "L TV", "U TV", "Output4"],
-	    #"hdbtname": ["catoutput1", "catoutput2", "catoutput3", "catoutput4"]
+        #"power": 1,
+        #"allsource": [1, 1, 1, 1],
+        #"allscaler": [0, 0, 0, 0],
+        #"allout": [0, 0, 0, 0],
+        #"allhdbtout": [1, 1, 1, 1],
+        #"allconnect": [1, 1, 1, 1],
+        #"allhdbtconnect": [0, 1, 1, 0],
+        #"name": ["L Projector", "L TV", "U TV", "Output4"],
+        #"hdbtname": ["catoutput1", "catoutput2", "catoutput3", "catoutput4"]
         return JtechOutputStatusResponse(
             True,
             result,
@@ -497,10 +497,10 @@ class JtechClient:
     async def get_cec_status(self,) -> dict[str, Any]:
         result = await self.send_rest_req("get cec status")
         #"power": 1,
-	    #"allinputname": ["Apple TV1", "PlayStation", "Nintendo", "Input4"],
-	    #"alloutputname": ["L Projector", "L TV", "U TV", "Output4"],
-	    #"currentInput": [0, 0, 0, 0],
-	    #"currentOutput": [0, 0, 0, 0]
+        #"allinputname": ["Apple TV1", "PlayStation", "Nintendo", "Input4"],
+        #"alloutputname": ["L Projector", "L TV", "U TV", "Output4"],
+        #"currentInput": [0, 0, 0, 0],
+        #"currentOutput": [0, 0, 0, 0]
         return JtechCECStatusResponse(
             True,
             result,
@@ -550,17 +550,17 @@ class JtechClient:
     async def get_network(self,) -> dict[str, Any]:
         result = await self.send_rest_req("get network")
         #"comhead": "get network",
-	    #"power": 1,
-	    #"dhcp": 1,
-	    #"ipaddress": "10.69.30.30",
-	    #"subnet": "255.255.255.0",
-	    #"gateway": "10.69.30.1",
-	    #"telnetport": 23,
-	    #"tcpport": 8000,
-	    #"macaddress": "6C:DF:FB:08:DA:03",
-	    #"model": "HDP-MXB44D70M",
-	    #"hostname": "IP-module-8DA03",
-	    #"username": 1    
+        #"power": 1,
+        #"dhcp": 1,
+        #"ipaddress": "10.69.30.30",
+        #"subnet": "255.255.255.0",
+        #"gateway": "10.69.30.1",
+        #"telnetport": 23,
+        #"tcpport": 8000,
+        #"macaddress": "6C:DF:FB:08:DA:03",
+        #"model": "HDP-MXB44D70M",
+        #"hostname": "IP-module-8DA03",
+        #"username": 1    
         return JtechNetworkResponse(
             True,
             result,
@@ -615,11 +615,11 @@ class JtechClient:
     async def get_system_status(self,) -> dict[str, Any]:
         result = await self.send_rest_req("get system status")
         #"power": 1,
-	    #"baudrate": 6,
-	    #"beep": 0,
-	    #"lock": 0,
-	    #"mode": 1,
-	    #"version": "V1.08.08"
+        #"baudrate": 6,
+        #"beep": 0,
+        #"lock": 0,
+        #"mode": 1,
+        #"version": "V1.08.08"
         return JtechSystemStatusResponse(
             True,
             result,
