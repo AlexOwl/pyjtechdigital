@@ -675,11 +675,11 @@ class JtechClient:
 
 
 
-    def validate_source(source: int | list,) -> None:
+    def validate_source(self, source: int | list,) -> None:
         if not ((isinstance(source, list) and len(source) == self._sources_count) or (source >= 1 and source <= self._sources_count)):
             raise JtechInvalidSource
 
-    def validate_output(output: int | list,) -> None:
+    def validate_output(self, output: int | list,) -> None:
         if not ((isinstance(output, list) and len(output) == self._outputs_count) or (output >= 1 and output <= self._outputs_count)):
             raise JtechInvalidOutput
 
