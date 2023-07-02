@@ -11,32 +11,15 @@ class JtechLoginResponse(JtechResponse):
     token: str
 
 @dataclass
-class JtechNetworkResponse(JtechResponse):
-    power: bool
-    dhcp: bool
-    ipaddress: str
-    subnet: str
-    gateway: str
-    telnetport: int
-    tcpport: int
-    macaddress: str
-    model: str
-    hostname: str
-    admin: bool  
-
-@dataclass
 class JtechStatusResponse(JtechResponse):
     power: bool
-    dhcp: bool
+    model: str
+    version: str
+    hostname: str
     ipaddress: str
     subnet: str
     gateway: str
-    telnetport: int
-    tcpport: int
-    macaddress: str
-    model: str
-    hostname: str
-    admin: bool  
+    macaddress: str  
 
 @dataclass
 class JtechVideoStatusResponse(JtechResponse):
@@ -46,6 +29,13 @@ class JtechVideoStatusResponse(JtechResponse):
     output_names: list[str]
     output_cat_names: list[str]
     preset_names: list[str]
+
+@dataclass
+class JtechInputStatusResponse(JtechResponse):
+    power: bool
+    edid: list[int]
+    active_sources: list[bool]
+    source_names: list[str]
 
 @dataclass
 class JtechOutputStatusResponse(JtechResponse):
@@ -60,19 +50,26 @@ class JtechOutputStatusResponse(JtechResponse):
     output_cat_names: list[str]
 
 @dataclass
-class JtechInputStatusResponse(JtechResponse):
-    power: bool
-    edid: list[int]
-    active_sources: list[bool]
-    source_names: list[str]
-
-@dataclass
 class JtechCECStatusResponse(JtechResponse):
     power: bool
     source_names: list[str]
     output_names: list[str]
     _current_source: list[int]
     _current_output: list[int]
+
+@dataclass
+class JtechNetworkResponse(JtechResponse):
+    power: bool
+    dhcp: bool
+    ipaddress: str
+    subnet: str
+    gateway: str
+    telnetport: int
+    tcpport: int
+    macaddress: str
+    model: str
+    hostname: str
+    admin: bool 
 
 @dataclass
 class JtechSystemStatusResponse(JtechResponse):
