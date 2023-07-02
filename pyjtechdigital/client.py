@@ -351,7 +351,7 @@ class JtechClient:
             result,
             bool(result.get(ATTR_POWER)),
             result.get(ATTR_EDID, []),
-            map(bool, result.get(ATTR_ACTIVE_SOURCES, [])),
+            list(map(bool, result.get(ATTR_ACTIVE_SOURCES, []))),
             result.get(ATTR_SOURCE_NAMES2, []),
         )
 
@@ -430,10 +430,10 @@ class JtechClient:
             bool(result.get(ATTR_POWER)),
             result.get(ATTR_SELECTED_SOURCES, []),
             result.get(ATTR_SELECTED_OUTPUT_SCALERS, []),
-            map(bool, result.get(ATTR_ENABLED_OUTPUTS, [])),
-            map(bool, result.get(ATTR_ENABLED_CAT_OUTPUTS, [])),
-            map(bool, result.get(ATTR_CONNECTED_OUTPUTS, [])),
-            map(bool, result.get(ATTR_CONNECTED_CAT_OUTPUTS, [])),
+            list(map(bool, result.get(ATTR_ENABLED_OUTPUTS, []))),
+            list(map(bool, result.get(ATTR_ENABLED_CAT_OUTPUTS, []))),
+            list(map(bool, result.get(ATTR_CONNECTED_OUTPUTS, []))),
+            list(map(bool, result.get(ATTR_CONNECTED_CAT_OUTPUTS, []))),
             result.get(ATTR_OUTPUT_NAMES2, []),
             result.get(ATTR_OUTPUT_CAT_NAMES2, []),
         )
@@ -519,7 +519,7 @@ class JtechClient:
             "cec command",
             {
                 ATTR_OBJECT: 0,
-                ATTR_PORT: map(int, sources),
+                ATTR_PORT: list(map(int, sources)),
                 ATTR_INDEX: command,
             },
         )
@@ -536,7 +536,7 @@ class JtechClient:
             "cec command",
             {
                 ATTR_OBJECT: 1,
-                ATTR_PORT: map(int, outputs),
+                ATTR_PORT: list(map(int, outputs)),
                 ATTR_INDEX: command,
             },
         )
