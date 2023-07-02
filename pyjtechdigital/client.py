@@ -298,8 +298,8 @@ class JtechClient:
             "video switch",
             {
                 ATTR_SOURCE: [
-                    output, 
                     source,
+                    output, 
                 ],
             },
         )
