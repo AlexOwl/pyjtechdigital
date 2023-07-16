@@ -33,9 +33,25 @@ class JtechVideoStatusResponse(JtechResponse):
 @dataclass
 class JtechInputStatusResponse(JtechResponse):
     power: bool
-    edid: list[int]
+    edid_indexes: list[int]
     active_sources: list[bool]
     source_names: list[str]
+
+# must be like this, so probably some user will have different behaviour
+# waiting an issue :)
+#allarc: [0, 0, 0, 0, 0, 0, 0, 0],
+#allconnect: [0, 0, 0, 0, 0, 0, 0, 0],
+#allhdbtarc: [0, 0, 0, 0, 0, 0, 0, 0],
+#allhdbtconnect: [0, 0, 0, 0, 0, 0, 0, 0],
+#allhdbthdcp: [0, 0, 0, 0, 0, 0, 0, 0],
+#allhdbtout: [1, 1, 1, 1, 1, 1, 1, 1],
+#allhdbtscaler: [0, 0, 0, 0, 0, 0, 0, 0],
+#allhdcp: [0, 0, 0, 0, 0, 0, 0, 0],
+#allout: [1, 1, 1, 1, 1, 1, 1, 1],
+#allscaler: [0, 0, 0, 0, 0, 0, 0, 0],
+#allsource: [1, 1, 1, 1, 1, 1, 1, 1],
+#name: ["OUTPUT1", "OUTPUT2", "OUTPUT3", "OUTPUT4"],
+#hdbtname: ["OUTPUT1", "OUTPUT2", "OUTPUT3", "OUTPUT4"]
 
 @dataclass
 class JtechOutputStatusResponse(JtechResponse):
@@ -54,8 +70,8 @@ class JtechCECStatusResponse(JtechResponse):
     power: bool
     source_names: list[str]
     output_names: list[str]
-    _current_source: list[int]
-    _current_output: list[int]
+    selected_cec_sources: list[int]
+    selected_cec_outputs: list[int]
 
 @dataclass
 class JtechNetworkResponse(JtechResponse):
@@ -74,8 +90,13 @@ class JtechNetworkResponse(JtechResponse):
 @dataclass
 class JtechSystemStatusResponse(JtechResponse):
     power: bool
-    baudrate: int
+    baudrate_index: int
     beep: bool
     lock: bool
     mode: int
     version: str
+
+@dataclass
+class JtechEdidResponse(JtechResponse):
+    index: int
+    edid: str

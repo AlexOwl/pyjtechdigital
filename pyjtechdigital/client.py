@@ -71,8 +71,29 @@ from .const import (
     HEADER_CACHE_CONTROL, HEADER_CONNECTION, HEADER_AUTHORIZATION, HEADER_SET_COOKIE,
 )
 
-from .responses import JtechResponse, JtechLoginResponse, JtechNetworkResponse, JtechStatusResponse, JtechVideoStatusResponse, JtechOutputStatusResponse, JtechInputStatusResponse, JtechCECStatusResponse, JtechSystemStatusResponse
-from .exceptions import JtechError, JtechAuthError, JtechNotSupported, JtechConnectionError, JtechConnectionTimeout, JtechInvalidSource, JtechInvalidOutput, JtechOptionError
+from .responses import (
+    JtechResponse,
+    JtechLoginResponse,
+    JtechNetworkResponse,
+    JtechStatusResponse,
+    JtechVideoStatusResponse,
+    JtechOutputStatusResponse,
+    JtechInputStatusResponse,
+    JtechCECStatusResponse,
+    JtechSystemStatusResponse,
+    JtechEdidResponse,
+)
+
+from .exceptions import (
+    JtechError,
+    JtechAuthError,
+    JtechNotSupported,
+    JtechConnectionError,
+    JtechConnectionTimeout,
+    JtechInvalidSource,
+    JtechInvalidOutput,
+    JtechOptionError,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -223,7 +244,7 @@ class JtechClient:
 
 
 
-    async def get_status(self,) -> dict[str, Any]:
+    async def get_status(self,) -> JtechStatusResponse:
         result = await self.send_rest_req("get status")
         #"comhead": "get status",
         #"power": 1,
@@ -238,13 +259,13 @@ class JtechClient:
             True,
             result,
             bool(result.get(ATTR_POWER)),
-            result.get(ATTR_MODEL),
-            result.get(ATTR_VERSION),
-            result.get(ATTR_HOSTNAME),
-            result.get(ATTR_IPADDRESS),
-            result.get(ATTR_SUBNET),
-            result.get(ATTR_GATEWAY),
-            result.get(ATTR_MAC),
+            str(result.get(ATTR_MODEL)),
+            str(result.get(ATTR_VERSION)),
+            str(result.get(ATTR_HOSTNAME)),
+            str(result.get(ATTR_IPADDRESS)),
+            str(result.get(ATTR_SUBNET)),
+            str(result.get(ATTR_GATEWAY)),
+            str(result.get(ATTR_MAC)),
         )
 
     async def login(self, user: str, password: str,) -> None:
@@ -259,7 +280,7 @@ class JtechClient:
         return JtechLoginResponse(
             bool(result.get(ATTR_RESULT)),
             result,
-            result.get(ATTR_TOKEN)
+            str(result.get(ATTR_TOKEN))
         )
 
     async def set_power(self, power: bool,) -> bool:
@@ -272,7 +293,7 @@ class JtechClient:
 
 
 
-    async def get_video_status(self,) -> dict[str, Any]:
+    async def get_video_status(self,) -> JtechVideoStatusResponse:
         result = await self.send_rest_req("get video status")
         #"power": 1,
         #"allsource": [1, 1, 1, 1],
@@ -284,11 +305,11 @@ class JtechClient:
             True,
             result,
             bool(result.get(ATTR_POWER)),
-            result.get(ATTR_SELECTED_SOURCES),
-            result.get(ATTR_SOURCE_NAMES),
-            result.get(ATTR_OUTPUT_NAMES),
-            result.get(ATTR_OUTPUT_CAT_NAMES),
-            result.get(ATTR_PRESET_NAMES),
+            result.get(ATTR_SELECTED_SOURCES, []),
+            result.get(ATTR_SOURCE_NAMES, []),
+            result.get(ATTR_OUTPUT_NAMES, []),
+            result.get(ATTR_OUTPUT_CAT_NAMES, []),
+            result.get(ATTR_PRESET_NAMES, []),
         )
 
     async def set_video_source(self, output: int, source: int,) -> bool:
@@ -339,7 +360,7 @@ class JtechClient:
 
 
 
-    async def get_source_status(self,) -> dict[str, Any]:
+    async def get_source_status(self,) -> JtechInputStatusResponse:
         result = await self.send_rest_req("get input status")
         #"comhead": "get input status",
         #"power": 1,
@@ -395,24 +416,63 @@ class JtechClient:
     #COPY_FROM_CAT_2
     #COPY_FROM_CAT_3
     #COPY_FROM_CAT_4
-    async def set_source_edid(self, source: int, edid: int,) -> bool:
+    async def set_source_edid(self, source: int, edid_index: int,) -> bool:
         self.validate_source(source)
         return await self.send_rest_quick(
             "set edid",
             {
                 ATTR_EDID: [
                     source, 
-                    edid,
+                    edid_index,
                 ],
             },
         )
 
-    #TODO: async def set_user_edid(self,)
-    #TODO: async def download_edid(self,)
+    async def set_custom_edid(self, custom_edid_index: int, edid: str,) -> bool:
+        return await self.send_rest_quick(
+            "set user edid",
+            {
+                ATTR_USER: custom_edid_index,
+                ATTR_EDID: edid,
+            },
+        )
+
+    #"comhead": "download edid",
+	#"index": 1,
+	#"edid": "00 FF FF FF FF FF FF 00 20 83 10 00 01 00 00 00 10 1A 01 03 80 33 1D 78 0A EE 95 A3 54 4C 99 26 0F 50 54 A1 08 00 D1 C0 45 40 61 40 81 00 81 C0 81 80 D1 00 A9 40 08 E8 00 30 F2 70 5A 80 B0 58 8A 00 50 1D 74 00 00 1E 02 3A 80 18 71 38 2D 40 58 2C 45 00 50 1D 74 00 00 1E 00 00 00 FD 00 31 47 1E 44 0F 00 0A 20 20 20 20 20 20 00 00 00 FC 00 48 44 4D 49 20 4D 41 54 52 49 58 0A 20 01 30 02 03 53 F0 57 61 10 1F 04 13 05 14 20 21 22 5D 5E 5F 60 65 66 62 63 64 07 16 03 12 2C 0D 7F 07 15 07 50 3D 1E C0 09 07 07 83 0F 00 00 E2 00 0F E3 05 C3 01 6E 03 0C 00 10 00 B8 3C 20 10 80 01 02 03 04 67 D8 5D C4 01 78 80 03 E3 06 05 01 E3 0F 01 E0 02 3A 80 18 71 38 2D 40 58 2C 45 00 C4 8E 21 00 00 1E 02 3A 80 D0 72 38 2D 40 10 2C 45 80 C4 8E 21 00 00 1E 00 00 00 00 00 00 00 00 40"
+    async def get_source_edid(self, source: int,) -> JtechEdidResponse:
+        self.validate_source(source)
+        result = await self.send_rest_req(
+            "download edid",
+            {
+                ATTR_INDEX: source
+            },
+        )
+        
+        return JtechEdidResponse(
+            True,
+            result,
+            int(result.get(ATTR_INDEX)),
+            str(result.get(ATTR_EDID)),
+        )
+
+    async def get_custom_edid(self, custom_edid_index: int,) -> JtechEdidResponse:
+        result = await self.send_rest_req(
+            "download edid",
+            {
+                ATTR_INDEX: self._sources_count + custom_edid_index
+            },
+        )
+        
+        return JtechEdidResponse(
+            True,
+            result,
+            int(result.get(ATTR_INDEX)),
+            str(result.get(ATTR_EDID)),
+        )
 
 
-
-    async def get_output_status(self,) -> dict[str, Any]:
+    async def get_output_status(self,) -> JtechOutputStatusResponse:
         result = await self.send_rest_req("get output status")
         #"comhead": "get output status",
         #"power": 1,
@@ -495,7 +555,7 @@ class JtechClient:
     
 
 
-    async def get_cec_status(self,) -> dict[str, Any]:
+    async def get_cec_status(self,) -> JtechCECStatusResponse:
         result = await self.send_rest_req("get cec status")
         #"power": 1,
         #"allinputname": ["Apple TV1", "PlayStation", "Nintendo", "Input4"],
@@ -506,10 +566,20 @@ class JtechClient:
             True,
             result,
             bool(result.get(ATTR_POWER)),
-            result.get(ATTR_SOURCE_NAMES),
-            result.get(ATTR_OUTPUT_NAMES),
-            result.get(ATTR_CURRENTSOURCE),
-            result.get(ATTR_CURRENTOUTPUT),
+            result.get(ATTR_SOURCE_NAMES, []),
+            result.get(ATTR_OUTPUT_NAMES, []),
+            result.get(ATTR_CURRENTSOURCE, []),
+            result.get(ATTR_CURRENTOUTPUT, []),
+        )
+
+    async def set_cec_sources(self, sources: list[bool],) -> bool: 
+        self.validate_source(sources)
+        return await self.send_rest_quick(
+            "cec command",
+            {
+                ATTR_OBJECT: 0,
+                ATTR_PORT: list(map(int, sources)),
+            },
         )
 
     #command: 1 - turnon, 2 - turnoff, 3 - keyup, 4 - keyleft, 5 - center, 6 - keyright, 7 - menu, 8 - keydown, 9 - back, 10 - prev, 11 - play, 12 - next, 13 - rewind, 14 - pause, 15 - forward, 16 - stop, 17 - mute, 18 - volumedown, 19 - volumeup
@@ -529,8 +599,18 @@ class JtechClient:
         sources = list(map(lambda i: i == source, range(1, self._sources_count+1)))
         return await self.send_cec_sources(sources, command)
 
+    async def set_cec_outputs(self, outputs: list[bool],) -> bool: 
+        self.validate_output(sources)
+        return await self.send_rest_quick(
+            "cec command",
+            {
+                ATTR_OBJECT: 1,
+                ATTR_PORT: list(map(int, outputs)),
+            },
+        )
+
     #command: 0 - turnon, 1 - turnoff, 2 - mute, 3 - volumedown, 4 - volumeup, 5 - source
-    async def send_cec_outputs(self, outputs: list[bool], command: int,) -> bool: #command:
+    async def send_cec_outputs(self, outputs: list[bool], command: int,) -> bool:
         self.validate_output(outputs)
         return await self.send_rest_quick(
             "cec command",
@@ -548,7 +628,7 @@ class JtechClient:
 
 
 
-    async def get_network(self,) -> dict[str, Any]:
+    async def get_network(self,) -> JtechNetworkResponse:
         result = await self.send_rest_req("get network")
         #"comhead": "get network",
         #"power": 1,
@@ -567,14 +647,14 @@ class JtechClient:
             result,
             bool(result.get(ATTR_POWER)),
             bool(result.get(ATTR_DHCP)),
-            result.get(ATTR_IPADDRESS),
-            result.get(ATTR_SUBNET),
-            result.get(ATTR_GATEWAY),
-            result.get(ATTR_TELNETPORT),
-            result.get(ATTR_TCPPORT),
-            result.get(ATTR_MAC),
-            result.get(ATTR_MODEL),
-            result.get(ATTR_HOSTNAME),
+            str(result.get(ATTR_IPADDRESS)),
+            str(result.get(ATTR_SUBNET)),
+            str(result.get(ATTR_GATEWAY)),
+            int(result.get(ATTR_TELNETPORT)),
+            int(result.get(ATTR_TCPPORT)),
+            str(result.get(ATTR_MAC)),
+            str(result.get(ATTR_MODEL)),
+            str(result.get(ATTR_HOSTNAME)),
             bool(result.get(ATTR_ADMIN)),
         )
 
@@ -592,7 +672,7 @@ class JtechClient:
                 ATTR_MODEL: model,
                 ATTR_HOSTNAME: hostname,
                 ATTR_ADMIN: int(admin)
-            }
+            },
         ) 
 
     async def set_network_defaults(self,) -> bool:
@@ -613,7 +693,7 @@ class JtechClient:
 
  
 
-    async def get_system_status(self,) -> dict[str, Any]:
+    async def get_system_status(self,) -> JtechSystemStatusResponse:
         result = await self.send_rest_req("get system status")
         #"power": 1,
         #"baudrate": 6,
@@ -625,11 +705,11 @@ class JtechClient:
             True,
             result,
             bool(result.get(ATTR_POWER)),
-            result.get(ATTR_BAUDRATE),
+            int(result.get(ATTR_BAUDRATE)),
             bool(result.get(ATTR_BEEP)),
             bool(result.get(ATTR_LOCK)),
-            result.get(ATTR_MODE),
-            result.get(ATTR_VERSION),
+            int(result.get(ATTR_MODE)),
+            str(result.get(ATTR_VERSION)),
         )
 
     async def set_panel_lock(self, lock: bool,) -> bool:
@@ -649,11 +729,11 @@ class JtechClient:
         )
 
     # 1 - 4800, 2 - 9600, 3 - 19200, 4 - 38400, 5 - 57600, 6 - 115200
-    async def set_baudrate(self, baudrate: int,) -> bool:
+    async def set_baudrate(self, baudrate_index: int,) -> bool:
         return await self.send_rest_quick(
             "set baudrate",
             {
-                ATTR_BAUDRATE: baudrate,
+                ATTR_BAUDRATE: baudrate_index,
             },
         )
 
@@ -685,12 +765,12 @@ class JtechClient:
 
 
 
-    #TODO: async def set_tx_hdcp(self,)
-    #TODO: async def set_arc(self,)
-
-    #TODO: set tgp
+    #TODO: set_tx_hdcp, set_arc, set tgp
 
     #TODO: cgi-bin/query?_= + (new Date).getTime()
+    #TODO: cgi-bin/upload?/upgrade/.bin
+    #TODO: cgi-bin/instr?cmd=hex(a5,5b,f7,...)
+    #TODO: upgrade/log.txt
 
     #TODO: cgi-bin/getinfo
     #version = 20.01
