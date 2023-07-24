@@ -82,6 +82,7 @@ from .responses import (
     JtechCECStatusResponse,
     JtechSystemStatusResponse,
     JtechEdidResponse,
+    JtechWebDetailsResponse,
 )
 
 from .exceptions import (
@@ -189,7 +190,7 @@ class JtechClient:
         url: str,
         data: Any = None,
         headers: dict[str, Any] | None = None,
-        json: bool = True,
+        json: bool = False,
         timeout: int = DEFAULT_TIMEOUT,
     ) -> Any:
         """Send HTTP request."""
@@ -211,14 +212,19 @@ class JtechClient:
         _LOGGER.debug("Request %s, data: %s, headers: %s", url, data, headers)
 
         try:
-            if json:
-                response = await self._session.post(
-                    url, json=data, headers=headers, timeout=timeout
+            if data is None:
+                response = await self._session.get(
+                    url, headers=headers, timeout=timeout
                 )
             else:
-                response = await self._session.post(
-                    url, data=data, headers=headers, timeout=timeout
-                )
+                if json:
+                    response = await self._session.post(
+                        url, json=data, headers=headers, timeout=timeout
+                    )
+                else:
+                    response = await self._session.post(
+                        url, data=data, headers=headers, timeout=timeout
+                    )
 
             _LOGGER.debug("Response status: %s", response.status)
 
@@ -228,7 +234,7 @@ class JtechClient:
                 self._session.cookie_jar.update_cookies(normalized_cookies)
 
             if response.status == 200:
-                result = await response.json(content_type=None) if json else True
+                result = await (response.json(content_type=None) if json else response.text())
                 _LOGGER.debug("Response result: %s", result)
         except ClientError as err:
             _LOGGER.debug("Request error %s", err)
@@ -751,6 +757,18 @@ class JtechClient:
             {
                 ATTR_REBOOT: int(reboot),
             },
+        )
+
+    async def get_web_details(self,) -> JtechWebDetailsResponse:
+        result = await self.send_req(f"http://{self.host}/index.html")
+
+        title_match = re.search("<title>(.+)</title>", result)
+        title = title_match and title_match.group(1)
+
+        return JtechWebDetailsResponse(
+            True,
+            result,
+            title,
         )
 
 

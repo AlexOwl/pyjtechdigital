@@ -100,3 +100,7 @@ class JtechSystemStatusResponse(JtechResponse):
 class JtechEdidResponse(JtechResponse):
     index: int
     edid: str
+
+@dataclass
+class JtechWebDetailsResponse(JtechResponse):
+    title: str
