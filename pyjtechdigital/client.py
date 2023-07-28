@@ -185,6 +185,8 @@ class JtechClient:
             bool(result.get(ATTR_RESULT)),
             result
         )
+    
+    _semaphore = asyncio.Semaphore(1)
 
     async def send_req(
         self,
@@ -195,59 +197,61 @@ class JtechClient:
         timeout: int = DEFAULT_TIMEOUT,
     ) -> Any:
         """Send HTTP request."""
-        result = {} if json else False
+        async with self._semaphore:
 
-        if self._session is None:
-            self._session = ClientSession(
-                cookie_jar=CookieJar(unsafe=True, quote_cookie=False)
-            )
+            result = {} if json else False
 
-        if headers is None:
-            headers = {}
-
-        headers[HEADER_CACHE_CONTROL] = "no-cache"
-        headers[HEADER_CONNECTION] = "keep-alive"
-        if self._token:
-            headers[HEADER_AUTHORIZATION] = f"Bearer {self._token}"
-
-        _LOGGER.debug("Request %s, data: %s, headers: %s", url, data, headers)
-
-        try:
-            if data is None:
-                response = await self._session.get(
-                    url, headers=headers, timeout=timeout
+            if self._session is None:
+                self._session = ClientSession(
+                    cookie_jar=CookieJar(unsafe=True, quote_cookie=False)
                 )
-            else:
-                if json:
-                    response = await self._session.post(
-                        url, json=data, headers=headers, timeout=timeout
+
+            if headers is None:
+                headers = {}
+
+            headers[HEADER_CACHE_CONTROL] = "no-cache"
+            headers[HEADER_CONNECTION] = "keep-alive"
+            if self._token:
+                headers[HEADER_AUTHORIZATION] = f"Bearer {self._token}"
+
+            _LOGGER.debug("Request %s, data: %s, headers: %s", url, data, headers)
+
+            try:
+                if data is None:
+                    response = await self._session.get(
+                        url, headers=headers, timeout=timeout
                     )
                 else:
-                    response = await self._session.post(
-                        url, data=data, headers=headers, timeout=timeout
-                    )
+                    if json:
+                        response = await self._session.post(
+                            url, json=data, headers=headers, timeout=timeout
+                        )
+                    else:
+                        response = await self._session.post(
+                            url, data=data, headers=headers, timeout=timeout
+                        )
 
-            _LOGGER.debug("Response status: %s", response.status)
+                _LOGGER.debug("Response status: %s", response.status)
 
-            cookies = response.headers.getall(HEADER_SET_COOKIE, None)
-            if cookies:
-                normalized_cookies = normalize_cookies(cookies)
-                self._session.cookie_jar.update_cookies(normalized_cookies)
+                cookies = response.headers.getall(HEADER_SET_COOKIE, None)
+                if cookies:
+                    normalized_cookies = normalize_cookies(cookies)
+                    self._session.cookie_jar.update_cookies(normalized_cookies)
 
-            if response.status == 200:
-                result = await (response.json(content_type=None) if json else response.text())
-                _LOGGER.debug("Response result: %s", result)
-        except ClientError as err:
-            _LOGGER.debug("Request error %s", err)
-            raise JtechConnectionError from err
-        except ConnectionError as err:
-            _LOGGER.debug("Connection error %s", err)
-            raise JtechConnectionError from err
-        except asyncio.exceptions.TimeoutError as err:
-            _LOGGER.debug("Request timeout %s", err)
-            raise JtechConnectionTimeout from err
+                if response.status == 200:
+                    result = await (response.json(content_type=None) if json else response.text())
+                    _LOGGER.debug("Response result: %s", result)
+            except ClientError as err:
+                _LOGGER.debug("Request error %s", err)
+                raise JtechConnectionError from err
+            except ConnectionError as err:
+                _LOGGER.debug("Connection error %s", err)
+                raise JtechConnectionError from err
+            except asyncio.exceptions.TimeoutError as err:
+                _LOGGER.debug("Request timeout %s", err)
+                raise JtechConnectionTimeout from err
 
-        return result
+            return result
 
 
 
