@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyjtechdigital"
-version = "0.3.0"
+version = "0.3.1"
 description = "Python library for remote control of J-Tech Digital HDMI Matrix."
 authors = ["Alex Owl <alexowl@protonmail.com>"]
 license = "MIT"
