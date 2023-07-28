@@ -10,6 +10,8 @@ import re
 
 from aiohttp import ClientError, ClientSession, CookieJar
 
+from .util import normalize_cookies
+
 from .const import (
     DEFAULT_LANGUAGE, DEFAULT_TIMEOUT, DEFAULT_TOKEN,
     ATTR_RESULT,
