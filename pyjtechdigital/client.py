@@ -762,7 +762,7 @@ class JtechClient:
     async def get_web_details(self,) -> JtechWebDetailsResponse:
         result = await self.send_req(f"http://{self.host}/index.html")
 
-        title_match = re.search("<title>(.+)</title>", result)
+        title_match = result.search("<title>(.+)</title>", result)
         title = title_match and title_match.group(1)
 
         return JtechWebDetailsResponse(
