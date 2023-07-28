@@ -13,7 +13,7 @@ from aiohttp import ClientError, ClientSession, CookieJar
 from .util import normalize_cookies
 
 from .const import (
-    DEFAULT_LANGUAGE, DEFAULT_TIMEOUT, DEFAULT_TOKEN,
+    ATTR_INPUT, DEFAULT_LANGUAGE, DEFAULT_TIMEOUT, DEFAULT_TOKEN,
     ATTR_RESULT,
     ATTR_TOKEN,
 
@@ -613,7 +613,7 @@ class JtechClient:
         return await self.send_cec_sources(sources, command)
 
     async def set_cec_outputs(self, outputs: list[bool],) -> bool: 
-        self.validate_output(sources)
+        self.validate_output(outputs)
         return await self.send_rest_quick(
             "cec command",
             {
@@ -636,7 +636,7 @@ class JtechClient:
 
     async def send_cec_output(self, output: int, command: int,) -> bool: 
         self.validate_output(output)
-        sources = list(map(lambda i: i == source, range(1, self._outputs_count+1)))
+        sources = list(map(lambda i: i == output, range(1, self._outputs_count+1)))
         return await self.send_cec_outputs(sources, command)
 
 
